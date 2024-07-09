@@ -1,6 +1,7 @@
 
 module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.0' = {
   name: 'containerGroupDeployment'
+  scope: resourceGroup('bicep-dev-1')
   params: {
     // Required parameters
     containers: [
