@@ -1,6 +1,6 @@
 param storageNamePrefix string = 'DEV'
 param location string = resourceGroup().location
-param skuName string = 'Premium_LRS'
+param skuName string = 'Standard_LRS'
 
 var storageName = '${toLower(storageNamePrefix)}${uniqueString(resourceGroup().id)}'
 
@@ -10,20 +10,21 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
   scope: resourceGroup('bicep-dev-1')
   params: {
     // Required parameters
+    name: 'bicep-ci-deployment'
     containers: [
       {
-        name: 'az-aci-x-001'
+        name: 'emby-server-v1'
         properties: {
           command: []
           environmentVariables: []
           image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
           ports: [
             {
-              port: 80
+              port: 8096
               protocol: 'Tcp'
             }
             {
-              port: 443
+              port: 8920
               protocol: 'Tcp'
             }
           ]
@@ -38,22 +39,16 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
          ]
     ipAddressPorts: [
       {
-        port: 80
+        port: 8096
         protocol: 'Tcp'
       }
       {
-        port: 443
+        port: 8920
         protocol: 'Tcp'
       }
     ]
-    name: 'cicgwaf001'
     // Non-required parameters
     location: location
-        tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 
@@ -64,9 +59,17 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = {
     // Required parameters
     name: storageName
     // Non-required parameters
-    kind: 'BlockBlobStorage'
+    kind: 'FileStorage'
     location: location
     skuName: skuName
+    fileServices: {
+      shares: [
+        {
+          enabledProtocols: 'NFS'
+          name: 'nfsfileshare'
+        }
+      ]
+    }
   }
 }
 
