@@ -4,6 +4,7 @@ param skuName string = 'Premium_LRS'
 
 var storageName = '${toLower(storageNamePrefix)}${uniqueString(resourceGroup().id)}'
 
+// deployment
 module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.0' = {
   name: 'containerGroupDeployment'
   scope: resourceGroup('bicep-dev-1')
