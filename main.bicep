@@ -4,6 +4,7 @@ param skuName string = 'Premium_LRS'
 param storageKind string = 'FileStorage'
 
 var storageName = '${toLower(storageNamePrefix)}${uniqueString(resourceGroup().id)}'
+var storageAccKey = listkeys(resourceId('Microsoft.Storage/storageAccounts', storageName), '2019-06-01').keys[0].value
 
 // deployment
 module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.0' = {
@@ -48,7 +49,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
               azureFile: {
                 shareName: 'nfsfileshare'
                 storageAccountName: storageName
-                storageAccountKey: 'abc'
+                storageAccountKey: storageAccKey
               }
             }
           ]
