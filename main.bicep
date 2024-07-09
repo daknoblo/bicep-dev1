@@ -48,7 +48,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
               azureFile: {
                 shareName: 'nfsfileshare'
                 storageAccountName: storageName
-                storageAccountKey: storageAccount.outputs.
+                storageAccountKey: storageAccount.outputs.storageAccountKey
               }
             }
           ]
@@ -87,6 +87,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = {
           name: 'nfsfileshare'
         }
       ]
+      allowsharedaccesskey: true
     }
   }
 }
