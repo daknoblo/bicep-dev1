@@ -48,7 +48,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
     ]
     name: 'cicgwaf001'
     // Non-required parameters
-    location: '<location>'
+    location: location
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
