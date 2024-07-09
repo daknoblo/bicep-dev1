@@ -59,7 +59,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = {
     // Required parameters
     name: storageName
     // Non-required parameters
-    kind: 'FileStorage'
+    kind: 'BlockBlobStorage'
     location: location
     skuName: skuName
     fileServices: {
