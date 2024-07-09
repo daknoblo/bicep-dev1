@@ -18,7 +18,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
         properties: {
           command: []
           environmentVariables: []
-          image: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+          image: 'linuxserver/emby:4.8.8'
           ports: [
             {
               port: 8096
@@ -34,6 +34,12 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
               cpu: 2
               memoryInGB: 2
             }
+          }
+          storage: {
+            mountPath: '/config2'
+            name: storageAccount.outputs.name
+            readOnly: false
+            shareName: 'nfsfileshare'
           }
         }
       }
