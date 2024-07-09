@@ -35,15 +35,26 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
               memoryInGB: 2
             }
           }
-          storage: {
-            mountPath: '/config2'
-            name: storageAccount.outputs.name
-            readOnly: false
-            shareName: 'nfsfileshare'
+          volumeMounts: [
+            {
+              mountPath: '/cfg20'
+              name: 'emby-storage'
+              readOnly: false
+            }
+          ]
+          volume: [
+            {
+              name: 'emby-storage'
+              azureFile: {
+                shareName: 'nfsfileshare'
+                storageAccountName: storageName
+                storageAccountKey: storageAccount.outputs.
+              }
+            }
+          ]
           }
         }
-      }
-         ]
+        ]
     ipAddressPorts: [
       {
         port: 8096
