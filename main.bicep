@@ -38,19 +38,9 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
           }
           volumeMounts: [
             {
-              mountPath: '/cfg20'
+              mountPath: '/config'
               name: 'emby-storage'
               readOnly: false
-            }
-          ]
-          volume: [
-            {
-              name: 'emby-storage'
-              azureFile: {
-                shareName: 'nfsfileshare'
-                storageAccountName: storageName
-                storageAccountKey: storageAccKey
-              }
             }
           ]
           }
@@ -68,6 +58,16 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
     ]
     // Non-required parameters
     location: location
+    volumes: [
+      {
+        name: 'emby-storage'
+        azureFile: {
+          shareName: 'emby-storage-smb'
+          storageAccountName: storageName
+          storageAccountKey: storageAccKey
+        }
+      }
+    ]
   }
 }
 
@@ -85,7 +85,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = {
       shares: [
         {
           enabledProtocols: 'SMB'
-          name: 'emby-storage'
+          name: 'emby-storage-smb'
         }
       ]
       allowsharedaccesskey: true
