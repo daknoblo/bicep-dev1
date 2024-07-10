@@ -84,8 +84,8 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = {
     fileServices: {
       shares: [
         {
-          enabledProtocols: 'NFS'
-          name: 'nfsfileshare'
+          enabledProtocols: 'SMB'
+          name: 'emby-storage'
         }
       ]
       allowsharedaccesskey: true
