@@ -79,8 +79,10 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = {
     name: storageName
     // Non-required parameters
     kind: storageKind
+    allowBlobPublicAccess: true
     location: location
     skuName: skuName
+    
     fileServices: {
       shares: [
         {
