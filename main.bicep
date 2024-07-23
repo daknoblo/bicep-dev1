@@ -72,7 +72,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
 }
 
 // storage for containers
-module storageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
   name: 'storageAccountDeployment'
   params: {
     // Required parameters
@@ -86,11 +86,14 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = {
     fileServices: {
       shares: [
         {
-          enabledProtocols: 'SMB'
           name: 'emby-storage-smb'
+          enabledProtocols: 'SMB'
+          accessTier: 'Cool'
+          shareQuota: '5'
         }
       ]
       allowsharedaccesskey: true
+      largeFileSharesState: 'Disabled'
     }
   }
 }
