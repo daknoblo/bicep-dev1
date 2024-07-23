@@ -89,13 +89,13 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
           name: 'emby-storage-smb'
           enabledProtocols: 'SMB'
           accessTier: 'Cool'
-          shareQuota: '5'
+          shareQuota: 5
         }
         {
           name: 'emby-config'
           enabledProtocols: 'SMB'
           accessTier: 'Cool'
-          shareQuota: '1'
+          shareQuota: 1
         }
       ]
       allowsharedaccesskey: true
