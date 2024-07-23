@@ -1,4 +1,4 @@
-param storageNamePrefix string = 'DEV'
+param storageNamePrefix string = 'sto'
 param location string = resourceGroup().location
 param skuName string = 'Premium_LRS'
 param storageKind string = 'FileStorage'
