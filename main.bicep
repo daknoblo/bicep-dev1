@@ -39,8 +39,13 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
           volumeMounts: [
             {
               mountPath: '/config'
-              name: 'emby-storage'
+              name: 'emby-config'
               readOnly: false
+            }
+            {
+              mountPath: '/media'
+              name: 'emby-media'
+              readOnly: true
             }
           ]
           }
@@ -60,9 +65,17 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
     location: location
     volumes: [
       {
-        name: 'emby-storage'
+        name: 'emby-config'
         azureFile: {
-          shareName: 'emby-storage-smb'
+          shareName: 'emby-config'
+          storageAccountName: storageName
+          storageAccountKey: storageAccKey
+        }
+      }
+      {
+        name: 'emby-media'
+        azureFile: {
+          shareName: 'emby-media'
           storageAccountName: storageName
           storageAccountKey: storageAccKey
         }
@@ -86,16 +99,16 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
     fileServices: {
       shares: [
         {
-          name: 'emby-storage-smb'
-          enabledProtocols: 'SMB'
-          accessTier: 'Cool'
-          shareQuota: 5
-        }
-        {
           name: 'emby-config'
           enabledProtocols: 'SMB'
-          accessTier: 'Cool'
+          // accessTier: 'Cool'
           shareQuota: 1
+        }
+        {
+          name: 'emby-media'
+          enabledProtocols: 'SMB'
+          // accessTier: 'Cool'
+          shareQuota: 5
         }
       ]
       allowsharedaccesskey: true
