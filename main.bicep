@@ -12,7 +12,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
   scope: resourceGroup('bicep-dev-1')
   params: {
     // Required parameters
-    name: 'bicep-ci-deployment'
+    name: 'container-instance-1'
     containers: [
       {
         name: 'emby-server-v1'
@@ -39,13 +39,8 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
           volumeMounts: [
             {
               mountPath: '/config'
-              name: 'emby-config'
+              name: 'container-emby'
               readOnly: false
-            }
-            {
-              mountPath: '/media'
-              name: 'emby-media'
-              readOnly: true
             }
           ]
           }
@@ -65,17 +60,9 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
     location: location
     volumes: [
       {
-        name: 'emby-config'
+        name: 'container-emby'
         azureFile: {
-          shareName: 'emby-config'
-          storageAccountName: storageName
-          storageAccountKey: storageAccKey
-        }
-      }
-      {
-        name: 'emby-media'
-        azureFile: {
-          shareName: 'emby-media'
+          shareName: 'container-emby'
           storageAccountName: storageName
           storageAccountKey: storageAccKey
         }
@@ -99,16 +86,10 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
     fileServices: {
       shares: [
         {
-          name: 'emby-config'
+          name: 'container-emby'
           enabledProtocols: 'SMB'
           // accessTier: 'Cool'
-          shareQuota: 1
-        }
-        {
-          name: 'emby-media'
-          enabledProtocols: 'SMB'
-          // accessTier: 'Cool'
-          shareQuota: 5
+          shareQuota: 100
         }
       ]
       allowsharedaccesskey: true
