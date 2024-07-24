@@ -1,6 +1,6 @@
 param storageNamePrefix string = 'sto'
 param location string = resourceGroup().location
-param skuName string = 'Premium_LRS'
+param skuName string = 'Standard_LRS'
 param storageKind string = 'FileStorage'
 
 var storageName = '${toLower(storageNamePrefix)}${uniqueString(resourceGroup().id)}'
@@ -39,8 +39,13 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
           volumeMounts: [
             {
               mountPath: '/config'
-              name: 'container-emby'
+              name: 'emby-appdata'
               readOnly: false
+            }
+            {
+              mountPath: '/media'
+              name: 'emby-media'
+              readOnly: true
             }
           ]
           }
@@ -60,9 +65,17 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
     location: location
     volumes: [
       {
-        name: 'container-emby'
+        name: 'emby-appdata'
         azureFile: {
-          shareName: 'container-emby'
+          shareName: 'emby-appdata'
+          storageAccountName: storageName
+          storageAccountKey: storageAccKey
+        }
+      }
+      {
+        name: 'emby-media'
+        azureFile: {
+          shareName: 'emby-media'
           storageAccountName: storageName
           storageAccountKey: storageAccKey
         }
@@ -79,21 +92,25 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
     name: storageName
     // Non-required parameters
     kind: storageKind
-    allowBlobPublicAccess: true
     location: location
     skuName: skuName
-    
     fileServices: {
       shares: [
         {
-          name: 'container-emby'
+          name: 'emby-appdata'
           enabledProtocols: 'SMB'
-          // accessTier: 'Cool'
+          accessTier: 'Cool'
+          shareQuota: 5
+        }
+        {
+          name: 'emby-media'
+          enabledProtocols: 'SMB'
+          accessTier: 'Cool'
           shareQuota: 100
         }
       ]
       allowsharedaccesskey: true
-      largeFileSharesState: 'Disabled'
+      largeFileSharesState: 'Enabled'
     }
   }
 }
