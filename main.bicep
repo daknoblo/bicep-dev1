@@ -1,7 +1,7 @@
 param storageNamePrefix string = 'sto'
 param location string = resourceGroup().location
 param skuName string = 'Standard_LRS'
-param storageKind string = 'FileStorage'
+param storageKind string = 'StorageV2'
 
 var storageName = '${toLower(storageNamePrefix)}${uniqueString(resourceGroup().id)}'
 var storageAccKey = listkeys(resourceId('Microsoft.Storage/storageAccounts', storageName), '2019-06-01').keys[0].value
