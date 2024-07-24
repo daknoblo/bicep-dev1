@@ -1,7 +1,5 @@
 param storageNamePrefix string = 'sto'
 param location string = resourceGroup().location
-param skuName string = 'Standard_LRS'
-param storageKind string = 'StorageV2'
 
 var storageName = '${toLower(storageNamePrefix)}${uniqueString(resourceGroup().id)}'
 var storageAccKey = listkeys(resourceId('Microsoft.Storage/storageAccounts', storageName), '2019-06-01').keys[0].value
@@ -103,10 +101,10 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
   params: {
     // Required parameters
     name: storageName
-    // Non-required parameters
-    kind: storageKind
     location: location
-    skuName: skuName
+    // Non-required parameters
+    skuName: 'Standard_LRS'
+    kind: 'StorageV2'
     fileServices: {
       shares: [
         {
@@ -124,6 +122,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
       ]
       allowsharedaccesskey: true
       largeFileSharesState: 'Enabled'
+      shareSoftDeleteEnabled: false
     }
   }
 }
