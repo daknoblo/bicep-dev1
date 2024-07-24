@@ -18,8 +18,21 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
         name: 'emby-server-v1'
         properties: {
           command: []
-          environmentVariables: []
-          image: 'linuxserver/emby:4.8.8'
+          environmentVariables: [
+            {
+              name: 'UID'
+              value: '1000'
+            }
+            {
+              name: 'GID'
+              value: '100'
+            }
+            {
+              name: 'GIDLIST'
+              value: '100'
+            }
+          ]
+          image: 'linuxserver/emby:latest'
           ports: [
             {
               port: 8096
