@@ -35,6 +35,8 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
   params: {
     // Required parameters
     name: 'container-instance-1'
+    ipAddressType: 'Private'
+    subnetId: virtualNetwork.outputs.subnetResourceIds[1]
     containers: [
       {
         name: 'emby-server-v1'
