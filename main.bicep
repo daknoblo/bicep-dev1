@@ -51,18 +51,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
         properties: {
           command: []
           environmentVariables: [
-            {
-              name: 'UID'
-              value: '1000'
-            }
-            {
-              name: 'GID'
-              value: '100'
-            }
-            {
-              name: 'GIDLIST'
-              value: '100'
-            }
           ]
           image: 'linuxserver/emby:latest'
           ports: [
