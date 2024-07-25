@@ -23,7 +23,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.1.8' = {
       }
       {
         name: 'subnet1'
-        addressPrefix: '10.10.1.1/24'
+        addressPrefix: '10.10.1.0/24'
       }
     ]
   }
