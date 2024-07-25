@@ -27,7 +27,9 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.1.8' = {
         delegations: [
           {
             name: 'delegate-ci'
-            serviceName: 'Microsoft.ContainerInstance/containerGroups'
+            properties: {
+              serviceName: 'Microsoft.ContainerInstance/containerGroups'
+            }
           }
         ]
       }
