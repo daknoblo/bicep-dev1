@@ -1,21 +1,29 @@
-param storageNamePrefix string = 'sto'
-param location string = resourceGroup().location
+targetScope = 'subscription'
 
-var storageName = '${toLower(storageNamePrefix)}${uniqueString(resourceGroup().id)}'
-var storageAccKey = listkeys(resourceId('Microsoft.Storage/storageAccounts', storageName), '2019-06-01').keys[0].value
+var location = 'germanywestcentral'
 
-// deployment
+var storageAccName = 'storage5292655134'
+var storageAccKey = listkeys(resourceId('Microsoft.Storage/storageAccounts', storageAccName), '2019-06-01').keys[0].value
+var storageSku = 'Standard_LRS'
+var storageKind = 'StorageV2'
+
+// foundational resources
+
+resource resourceGroupName 'Microsoft.Resources/resourceGroups@2024-03-01' = {
+  name: 'bicep-dev-1'
+  location: location
+}
 
 module virtualNetwork 'br/public:avm/res/network/virtual-network:0.1.8' = {
   name: 'virtualNetworkDeployment'
-  scope: resourceGroup('bicep-dev-1')
+  scope: resourceGroup(resourceGroupName.name)
   params: {
     // Required parameters
     name: 'vnet1'
     addressPrefixes: [
       '10.10.0.0/16'
     ]
-    location: resourceGroup().location
+    location: location
     subnets: [
       {
         name: 'GatewaySubnet'
@@ -101,7 +109,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
         name: 'emby-appdata'
         azureFile: {
           shareName: 'emby-appdata'
-          storageAccountName: storageName
+          storageAccountName: storageAccount
           storageAccountKey: storageAccKey
         }
       }
@@ -120,13 +128,14 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
 // storage for containers
 module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
   name: 'storageAccountDeployment'
+  scope: resourceGroup(resourceGroupName.name)
   params: {
     // Required parameters
-    name: storageName
+    name: storageAccName
     location: location
     // Non-required parameters
-    skuName: 'Standard_LRS'
-    kind: 'StorageV2'
+    skuName: storageSku
+    kind: storageKind
     fileServices: {
       shares: [
         {
@@ -148,5 +157,3 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
     }
   }
 }
-
-// asd
