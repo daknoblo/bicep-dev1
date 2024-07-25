@@ -22,8 +22,14 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.1.8' = {
         addressPrefix: '10.10.0.0/24'
       }
       {
-        name: 'subnet1'
+        name: 'container-instance-subnet'
         addressPrefix: '10.10.1.0/24'
+        delegations: [
+          {
+            name: 'delegate-ci'
+            serviceName: 'Microsoft.ContainerInstance/containerGroups'
+          }
+        ]
       }
     ]
   }
