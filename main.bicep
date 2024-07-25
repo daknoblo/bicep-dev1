@@ -13,17 +13,17 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.1.8' = {
     // Required parameters
     name: 'vnet1'
     addressPrefixes: [
-      '10.10.15.0/16'
+      '10.10.0.0/16'
     ]
     location: resourceGroup().location
     subnets: [
       {
         name: 'GatewaySubnet'
-        addressPrefix: '10.10.15.0/24'
+        addressPrefix: '10.10.0.0/24'
       }
       {
         name: 'subnet1'
-        addressPrefix: '10.10.15.1/24'
+        addressPrefix: '10.10.1.1/24'
       }
     ]
   }
