@@ -5,6 +5,30 @@ var storageName = '${toLower(storageNamePrefix)}${uniqueString(resourceGroup().i
 var storageAccKey = listkeys(resourceId('Microsoft.Storage/storageAccounts', storageName), '2019-06-01').keys[0].value
 
 // deployment
+
+module virtualNetwork 'br/public:avm/res/network/virtual-network:0.1.8' = {
+  name: 'virtualNetworkDeployment'
+  scope: resourceGroup('bicep-dev-1')
+  params: {
+    // Required parameters
+    name: 'vnet1'
+    addressPrefixes: [
+      '10.10.15.0/16'
+    ]
+    location: resourceGroup().location
+    subnets: [
+      {
+        name: 'GatewaySubnet'
+        addressPrefix: '10.10.15.0/24'
+      }
+      {
+        name: 'subnet1'
+        addressPrefix: '10.10.15.1/24'
+      }
+    ]
+  }
+}
+
 module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.0' = {
   name: 'containerGroupDeployment'
   scope: resourceGroup('bicep-dev-1')
