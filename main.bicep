@@ -11,6 +11,7 @@ var storageKind = 'StorageV2'
 
 resource resourceGroupName 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   name: 'bicep-dev-1'
+  scope: subscription('bicep-dev-1')
   location: location
 }
 
