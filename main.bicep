@@ -2,7 +2,7 @@ targetScope = 'resourceGroup'
 
 var location = 'germanywestcentral'
 var rgName = 'bicep-dev-1'
-var storageAccName = 'storage5292655134'
+var storageAccName = 'storage5293985134'
 var storageAccKey = listkeys(resourceId('Microsoft.Storage/storageAccounts', storageAccName), '2019-06-01').keys[0].value
 var storageSku = 'Standard_LRS'
 var storageKind = 'StorageV2'
@@ -52,7 +52,7 @@ module vnetNsg 'br/public:avm/res/network/network-security-group:0.3.1' = {
   scope: resourceGroup(resourceGroupName.name)
   params: {
     // Required parameters
-    name: 'vnetNsg'
+    name: 'vnetNsg-containers'
     location: location
     securityRules: [
       {
