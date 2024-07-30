@@ -14,6 +14,7 @@ resource resourceGroupName 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   location: location
 }
 
+// network resources
 module virtualNetwork 'br/public:avm/res/network/virtual-network:0.1.8' = {
   name: 'virtualNetworkDeployment'
   scope: resourceGroup(resourceGroupName.name)
@@ -32,6 +33,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.1.8' = {
       {
         name: 'container-instance-subnet'
         addressPrefix: '10.10.1.0/24'
+        nsg: vnetNsg.outputs.name
         delegations: [
           {
             name: 'delegate-ci'
@@ -40,6 +42,46 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.1.8' = {
             }
           }
         ]
+      }
+    ]
+  }
+}
+
+module vnetNsg 'br/public:avm/res/network/network-security-group:0.3.1' = {
+  name: 'vnetNsgDeployment'
+  scope: resourceGroup(resourceGroupName.name)
+  params: {
+    // Required parameters
+    name: 'vnetNsg'
+    location: location
+    securityRules: [
+      {
+        name: 'DenyAllInBound'
+        properties: {
+          access: 'Deny'
+          description: 'Deny all inbound traffic'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '*'
+          direction: 'Inbound'
+          priority: 4096
+          protocol: '*'
+          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+        }
+      }
+      {
+        name: 'DenyAllOutBound'
+        properties: {
+          access: 'Deny'
+          description: 'Deny all outbound traffic'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '*'
+          direction: 'Outbound'
+          priority: 4096
+          protocol: '*'
+          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+        }
       }
     ]
   }
@@ -109,7 +151,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
         name: 'emby-appdata'
         azureFile: {
           shareName: 'emby-appdata'
-          storageAccountName: storageAccount
+          storageAccountName: storageAccName
           storageAccountKey: storageAccKey
         }
       }
@@ -117,7 +159,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
         name: 'emby-media'
         azureFile: {
           shareName: 'emby-media'
-          storageAccountName: storageName
+          storageAccountName: storageAccName
           storageAccountKey: storageAccKey
         }
       }
