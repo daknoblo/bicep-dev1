@@ -1,9 +1,11 @@
 targetScope = 'resourceGroup'
 
+param storageAccountName string = 'sa'
+
 var location = 'germanywestcentral'
-var rgName = 'bicep-dev-1'
-var storageAccName = 'storage5293985134'
-var storageAccKey = listkeys(resourceId('Microsoft.Storage/storageAccounts', storageAccName), '2019-06-01').keys[0].value
+var rgName = 'bicep-dev-2'
+var storageAccNameFinal = '${storageAccountName}${uniqueString(subscription().id, rgName)}'
+var storageAccKey = listkeys(resourceId('Microsoft.Storage/storageAccounts', storageAccNameFinal), '2019-06-01').keys[0].value
 var storageSku = 'Standard_LRS'
 var storageKind = 'StorageV2'
 
@@ -156,7 +158,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
         name: 'emby-appdata'
         azureFile: {
           shareName: 'emby-appdata'
-          storageAccountName: storageAccName
+          storageAccountName: storageAccNameFinal
           storageAccountKey: storageAccKey
         }
       }
@@ -164,7 +166,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
         name: 'emby-media'
         azureFile: {
           shareName: 'emby-media'
-          storageAccountName: storageAccName
+          storageAccountName: storageAccNameFinal
           storageAccountKey: storageAccKey
         }
       }
@@ -178,7 +180,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
   scope: resourceGroup(resourceGroupName.name)
   params: {
     // Required parameters
-    name: storageAccName
+    name: storageAccNameFinal
     location: location
     // Non-required parameters
     skuName: storageSku
