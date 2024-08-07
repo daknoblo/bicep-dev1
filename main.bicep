@@ -3,7 +3,7 @@ targetScope = 'resourceGroup'
 param storageAccountName string = 'sa'
 
 var location = 'germanywestcentral'
-var rgName = 'bicep-dev-2'
+var rgName = 'bicep-dev-1'
 var storageAccNameFinal = '${storageAccountName}${uniqueString(subscription().id, rgName)}'
 var storageAccKey = listkeys(resourceId('Microsoft.Storage/storageAccounts', storageAccNameFinal), '2019-06-01').keys[0].value
 var storageSku = 'Standard_LRS'
