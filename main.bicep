@@ -43,6 +43,10 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.1.8' = {
           }
         ]
       }
+      {
+        name: 'DefaultSubnet'
+        addressPrefix: '10.10.2.0/24'
+      }
     ]
   }
 }
@@ -178,6 +182,15 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
     // Non-required parameters
     skuName: storageSku
     kind: storageKind
+    privateEndpoints: [
+      {
+        privateDnsZoneResourceIds: [
+          privateDnsZone.outputs.resourceId
+        ]
+        service: 'blob'
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[2]
+      }
+    ]
     fileServices: {
       shares: [
         {
@@ -197,5 +210,15 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
       largeFileSharesState: 'Enabled'
       shareSoftDeleteEnabled: false
     }
+  }
+}
+
+module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.5.0' = {
+  name: 'privateDnsZoneDeployment'
+  params: {
+    // Required parameters
+    name: 'biceptest.local'
+    // Non-required parameters
+    location: 'global'
   }
 }
