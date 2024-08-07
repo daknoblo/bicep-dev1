@@ -226,3 +226,4 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.5.0' = {
     location: 'global'
   }
 }
+// Output
