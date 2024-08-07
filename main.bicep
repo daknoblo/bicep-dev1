@@ -93,6 +93,60 @@ module vnetNsg 'br/public:avm/res/network/network-security-group:0.3.1' = {
   }
 }
 
+module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.5.0' = {
+  name: 'privateDnsZoneDeployment'
+  params: {
+    // Required parameters
+    name: 'biceptest.local'
+    // Non-required parameters
+    location: 'global'
+  }
+}
+
+// storage for containers
+module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
+  name: 'storageAccountDeployment'
+  scope: resourceGroup(resourceGroupName.name)
+  params: {
+    // Required parameters
+    name: storageAccNameFinal
+    location: location
+    // Non-required parameters
+    skuName: storageSku
+    kind: storageKind
+    privateEndpoints: [
+      {
+        privateDnsZoneResourceIds: [
+          privateDnsZone.outputs.resourceId
+        ]
+        service: 'blob'
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[2]
+      }
+    ]
+    fileServices: {
+      shares: [
+        {
+          name: 'emby-appdata'
+          enabledProtocols: 'SMB'
+          accessTier: 'Cool'
+          shareQuota: 5
+        }
+        {
+          name: 'emby-media'
+          enabledProtocols: 'SMB'
+          accessTier: 'Cool'
+          shareQuota: 100
+        }
+      ]
+      allowsharedaccesskey: false
+      shareSoftDeleteEnabled: false
+      largeFileSharesState: 'Enabled'
+
+    }
+  }
+}
+
+// container group
 module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.0' = {
   name: 'containerGroupDeployment'
   scope: resourceGroup('bicep-dev-1')
@@ -173,57 +227,3 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
     ]
   }
 }
-
-// storage for containers
-module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
-  name: 'storageAccountDeployment'
-  scope: resourceGroup(resourceGroupName.name)
-  params: {
-    // Required parameters
-    name: storageAccNameFinal
-    location: location
-    // Non-required parameters
-    skuName: storageSku
-    kind: storageKind
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          privateDnsZone.outputs.resourceId
-        ]
-        service: 'blob'
-        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[2]
-      }
-    ]
-    fileServices: {
-      shares: [
-        {
-          name: 'emby-appdata'
-          enabledProtocols: 'SMB'
-          accessTier: 'Cool'
-          shareQuota: 5
-        }
-        {
-          name: 'emby-media'
-          enabledProtocols: 'SMB'
-          accessTier: 'Cool'
-          shareQuota: 100
-        }
-      ]
-      allowsharedaccesskey: false
-      shareSoftDeleteEnabled: false
-      largeFileSharesState: 'Enabled'
-
-    }
-  }
-}
-
-module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.5.0' = {
-  name: 'privateDnsZoneDeployment'
-  params: {
-    // Required parameters
-    name: 'biceptest.local'
-    // Non-required parameters
-    location: 'global'
-  }
-}
-// Output
