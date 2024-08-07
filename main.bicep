@@ -33,9 +33,9 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.1.8' = {
         addressPrefix: '10.10.0.0/24'
       }
       {
-        name: 'container-instance-subnet'
+        name: 'ciSubnet'
         addressPrefix: '10.10.1.0/24'
-        nsg: vnetNsg.outputs.name
+        //nsg: vnetNsg.outputs.name
         delegations: [
           {
             name: 'delegate-ci'
