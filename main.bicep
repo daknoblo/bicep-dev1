@@ -137,6 +137,18 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.11.0' = {
           accessTier: 'Cool'
           shareQuota: 100
         }
+        {
+          name: 'plex-appdata'
+          enabledProtocols: 'SMB'
+          accessTier: 'Cool'
+          shareQuota: 5
+        }
+        {
+          name: 'plex-media'
+          enabledProtocols: 'SMB'
+          accessTier: 'Cool'
+          shareQuota: 100
+        }
       ]
       allowsharedaccesskey: false
       shareSoftDeleteEnabled: false
@@ -194,6 +206,44 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
           ]
           }
         }
+        {
+          name: 'plex-server-v1'
+          properties: {
+            command: []
+            environmentVariables: [
+            ]
+            image: 'linuxserver/plex'
+            ports: [
+              {
+                port: 8324
+                protocol: 'Tcp'
+              }
+              {
+                port: 32400
+                protocol: 'Tcp'
+              }
+            ]
+            resources: {
+              requests: {
+                cpu: 2
+                memoryInGB: 2
+              }
+            }
+            volumeMounts: [
+              {
+                mountPath: '/config'
+                name: 'plex-appdata'
+                readOnly: false
+              }
+              {
+                mountPath: '/media'
+                name: 'plex-media'
+                readOnly: true
+              }
+            ]
+            }
+          }
+        
         ]
     ipAddressPorts: [
       {
@@ -202,6 +252,14 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
       }
       {
         port: 8920
+        protocol: 'Tcp'
+      }
+      {
+        port: 8324
+        protocol: 'Tcp'
+      }
+      {
+        port: 32400
         protocol: 'Tcp'
       }
     ]
@@ -220,6 +278,22 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
         name: 'emby-media'
         azureFile: {
           shareName: 'emby-media'
+          storageAccountName: storageAccNameFinal
+          storageAccountKey: storageAccKey
+        }
+      }
+      {
+        name: 'plex-appdata'
+        azureFile: {
+          shareName: 'plex-appdata'
+          storageAccountName: storageAccNameFinal
+          storageAccountKey: storageAccKey
+        }
+      }
+      {
+        name: 'plex-media'
+        azureFile: {
+          shareName: 'plex-media'
           storageAccountName: storageAccNameFinal
           storageAccountKey: storageAccKey
         }
