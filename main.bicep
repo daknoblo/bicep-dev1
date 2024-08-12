@@ -1,19 +1,17 @@
 targetScope = 'resourceGroup'
 
 param projPrefix string = 'ddf2'
-//param storageAccountName string = 'sa'
 
 var location = 'germanywestcentral'
 var rgName = 'bicep-dev-1'
-
-//var storageAccNameFinal = '${storageAccountName}${uniqueString(subscription().id, rgName)}'
-//var storageAccKey = listkeys(resourceId('Microsoft.Storage/storageAccounts', storageAccNameFinal), '2019-06-01').keys[0].value
-
 var storageSku = 'Standard_LRS'
 var storageKind = 'StorageV2'
 
 var saAccNameAppdata = '${projPrefix}saappdata4908'
 var saAccNameMedia = '${projPrefix}samedia4286'
+var saAccKeyAppdata = listkeys(resourceId('Microsoft.Storage/storageAccounts', saAccNameAppdata), '2019-06-01').keys[0].value
+var saAccKeyMedia = listkeys(resourceId('Microsoft.Storage/storageAccounts', saAccNameMedia), '2019-06-01').keys[0].value
+
 
 // foundational resources
 
@@ -24,11 +22,11 @@ resource resourceGroupName 'Microsoft.Resources/resourceGroups@2024-03-01' exist
 
 // network resources
 module virtualNetwork 'br/public:avm/res/network/virtual-network:0.1.8' = {
-  name: 'virtualNetworkDeployment'
+  name: '${projPrefix}-virtualNetworkDeployment'
   scope: resourceGroup(resourceGroupName.name)
   params: {
     // Required parameters
-    name: 'vnet1'
+    name: '${projPrefix}-vnet'
     addressPrefixes: [
       '10.10.0.0/16'
     ]
@@ -66,11 +64,11 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.1.8' = {
 }
 
 module vnetNsg 'br/public:avm/res/network/network-security-group:0.4.0' = {
-  name: 'vnetNsgDeployment'
+  name: '${projPrefix}-vnetNsgDeployment'
   scope: resourceGroup(resourceGroupName.name)
   params: {
     // Required parameters
-    name: 'vnetNsg-containers'
+    name: '${projPrefix}-vnetNsg'
     location: location
     securityRules: [
       {
@@ -324,7 +322,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
         azureFile: {
           shareName: 'emby-appdata'
           storageAccountName: saAccNameAppdata
-          ////storageAccountKey: storageAccKey
+          storageAccountKey: saAccKeyAppdata
         }
       }
       {
@@ -332,7 +330,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
         azureFile: {
           shareName: 'emby-media'
           storageAccountName: saAccNameMedia
-          //storageAccountKey: storageAccKey
+          storageAccountKey: saAccKeyMedia
         }
       }
       {
@@ -340,7 +338,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
         azureFile: {
           shareName: 'plex-appdata'
           storageAccountName: saAccNameAppdata
-          //storageAccountKey: storageAccKey
+          storageAccountKey: saAccKeyAppdata
         }
       }
       {
@@ -348,7 +346,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:0.2.
         azureFile: {
           shareName: 'plex-media'
           storageAccountName: saAccNameMedia
-          //storageAccountKey: storageAccKey
+          storageAccountKey: saAccKeyMedia
         }
       }
     ]
