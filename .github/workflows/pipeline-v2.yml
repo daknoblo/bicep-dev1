@@ -1,0 +1,56 @@
+name: Run-Bicep-Deployment-v2
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+variables:
+  - template: ./variables/variables.general.yml
+
+parameters:
+  - name: Environments
+    type: object
+    default:
+      - name: env1
+        displayName: "env1"
+        condition: and(succeeded(), ne(variables['Build.Reason'],'PullRequest'))
+        type: string
+        dependsOn:
+          - build
+      - name: env2
+        displayName: "env2"
+        condition: and(succeeded(), ne(variables['Build.Reason'],'PullRequest'), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+        type: string
+        dependsOn:
+          - env1
+          
+stages:
+  - stage: build
+    displayName: Build
+    jobs:
+      - template: templates/build/build.template.yml@common
+        parameters:
+          acrName: ${{  variables.acrName  }}
+          serviceConnectionName: ${{ variables.serviceConnectionName  }}
+          subscriptionId: ${{  variables.subscriptionId  }}
+  - stage: deploy
+    displayName: Deploy
+    jobs:
+      runs-on: ubuntu-latest
+      steps:
+      - name: Checkout code
+        uses: actions/checkout@main
+      - name: Log into Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Deploy Bicep file
+        uses: azure/arm-deploy@v1
+        with:
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+          resourceGroupName: ${{ secrets.AZURE_RG }}
+          deploymentMode: 'Incremental'
+          template: ./main.bicep
+          failOnStdErr: false
